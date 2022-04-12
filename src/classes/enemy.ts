@@ -4,7 +4,26 @@ import { EVENTS_NAME } from "../consts";
 import { Actor } from "./actor";
 import { Player } from "./player";
 
+enum Direction {
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT,
+}
+
+const randomDirection = (exclude: Direction) => {
+  let newDirection = Phaser.Math.Between(0, 3);
+  while (newDirection === exclude) {
+    newDirection = Phaser.Math.Between(0, 3);
+  }
+
+  return newDirection;
+};
+
 export class Enemy extends Actor {
+  private direction = Direction.RIGHT;
+  private moveEvent: Phaser.Time.TimerEvent;
+
   private target: Player;
   private AGRESSOR_RADIUS = 100;
   private attackHandler: () => void;
@@ -55,9 +74,27 @@ export class Enemy extends Actor {
         this.attackHandler
       );
     });
+
+    this.anims.play("lizard-idle");
+
+    this.moveEvent = scene.time.addEvent({
+      delay: 2000,
+      callback: () => {
+        this.direction = randomDirection(this.direction);
+      },
+      loop: true,
+    });
   }
 
-  preUpdate(): void {
+  destroy(fromScene?: boolean) {
+    this.moveEvent.destroy();
+
+    super.destroy(fromScene);
+  }
+
+  preUpdate(t: number, dt: number) {
+    super.preUpdate(t, dt);
+
     if (
       Math.Distance.BetweenPoints(
         { x: this.x, y: this.y },
@@ -66,10 +103,26 @@ export class Enemy extends Actor {
     ) {
       this.getBody().setVelocityX(this.target.x - this.x);
       this.getBody().setVelocityY(this.target.y - this.y);
-
-      //!this.anims.isPlaying && this.anims.play("lizard-idle");
     } else {
-      this.getBody().setVelocity(0);
+      const speed = 50;
+
+      switch (this.direction) {
+        case Direction.UP:
+          this.getBody().setVelocity(0, -speed);
+          break;
+
+        case Direction.DOWN:
+          this.getBody().setVelocity(0, speed);
+          break;
+
+        case Direction.LEFT:
+          this.getBody().setVelocity(-speed, 0);
+          break;
+
+        case Direction.RIGHT:
+          this.getBody().setVelocity(speed, 0);
+          break;
+      }
     }
   }
 

@@ -14,7 +14,7 @@ export class GameScene extends Scene {
   private wallsLayer!: Tilemaps.TilemapLayer;
   private groundLayer!: Tilemaps.TilemapLayer;
   private chests!: GameObjects.Sprite[];
-  private enemies!: Lizard[];
+  private enemies!: Enemy[];
   private lizards!: Phaser.Physics.Arcade.Group;
 
   constructor() {
@@ -47,7 +47,6 @@ export class GameScene extends Scene {
       tileWidth: 16,
       tileHeight: 16,
     });
-    console.log(this.map);
 
     this.tileset = this.map.addTilesetImage("Grass", "Grass");
     this.groundLayer = this.map.createLayer("Ground", this.tileset, 0, 0);
@@ -158,11 +157,12 @@ export class GameScene extends Scene {
 
     this.enemies = enemiesPoints.map(
       (enemyPoint) =>
-        new Lizard(
+        new Enemy(
           this,
           enemyPoint.x as number,
           enemyPoint.y as number,
-          "lizard"
+          "lizard",
+          this.player
         )
       //.setScale(1.5)
     );
@@ -183,7 +183,7 @@ export class GameScene extends Scene {
   private initCamera(): void {
     this.cameras.main.setSize(this.game.scale.width, this.game.scale.height);
     this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
-    //this.cameras.main.setZoom(2);
+    this.cameras.main.setZoom(2);
   }
 
   private showDebugWalls(): void {
