@@ -31,13 +31,7 @@ export class LoadingScene extends Scene {
       url: "tilemaps/json/Fences.png",
     });
 
-    this.load.tilemapTiledJSON("dungeon", "tilemaps/json/Grass.json");
-
-    // CHEST LOADING
-    this.load.spritesheet("tiles_spr", "tilemaps/tiles/dungeon-16-16.png", {
-      frameWidth: 16,
-      frameHeight: 16,
-    });
+    this.load.tilemapTiledJSON("tilemapGrass", "tilemaps/json/Grass.json");
 
     this.load.spritesheet("water", "spritesheets/Water.png", {
       frameWidth: 64,

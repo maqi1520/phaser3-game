@@ -2,7 +2,6 @@ import { GameObjects, Scene, Tilemaps } from "phaser";
 
 import { Player } from "../../classes/player";
 import { Enemy } from "../../classes/enemy";
-import { Lizard } from "../../classes/Lizard";
 import { createLizardAnims } from "../../anims/EnemyAnims";
 
 import { EVENTS_NAME } from "../../consts";
@@ -12,10 +11,10 @@ export class GameScene extends Scene {
   private map!: Tilemaps.Tilemap;
   private tileset!: Tilemaps.Tileset;
   private wallsLayer!: Tilemaps.TilemapLayer;
+  // @ts-ignore
   private groundLayer!: Tilemaps.TilemapLayer;
   private chests!: GameObjects.Sprite[];
   private enemies!: Enemy[];
-  private lizards!: Phaser.Physics.Arcade.Group;
 
   constructor() {
     super("game-scene");
@@ -30,8 +29,6 @@ export class GameScene extends Scene {
 
     this.initChests();
     this.initEnemies();
-    //this.initLizards();
-    //this.initPH();
     this.initCamera();
 
     this.physics.add.collider(this.player, this.wallsLayer);
@@ -44,7 +41,7 @@ export class GameScene extends Scene {
   private initMap(): void {
     this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "water");
     this.map = this.make.tilemap({
-      key: "dungeon",
+      key: "tilemapGrass",
       tileWidth: 16,
       tileHeight: 16,
     });
@@ -81,71 +78,12 @@ export class GameScene extends Scene {
     );
 
     this.chests.forEach((chest) => {
+      // @ts-ignore
       this.physics.add.overlap(this.player, chest, (obj1, obj2) => {
         this.game.events.emit(EVENTS_NAME.chestLoot);
         obj2.destroy();
-        // this.cameras.main.flash();
       });
     });
-  }
-
-  private initPH(): void {
-    const chestPoints = this.map.filterObjects(
-      "ph",
-      (obj) => obj.name === "ph"
-    );
-
-    this.chests = chestPoints.map((chestPoint) =>
-      this.physics.add
-        .sprite(
-          chestPoint.x as number,
-          chestPoint.y as number,
-          "tiles_spr",
-          530
-        )
-        .setScale(1.5)
-    );
-
-    //相遇可以吃血
-    this.chests.forEach((chest) => {
-      this.physics.add.overlap(this.player, chest, (obj1, obj2) => {
-        this.player.addHP();
-        //this.game.events.emit(EVENTS_NAME.addPh);
-        obj2.destroy();
-        // this.cameras.main.flash();
-      });
-    });
-  }
-
-  private initLizards(): void {
-    this.lizards = this.physics.add.group({
-      classType: Lizard,
-      createCallback: (go) => {
-        const lizGo = go as Lizard;
-        lizGo.body.onCollide = true;
-      },
-    });
-
-    const lizardsLayer = this.map.getObjectLayer("Enemies");
-    lizardsLayer.objects.forEach((lizObj) => {
-      this.lizards.get(
-        lizObj.x! + lizObj.width! * 0.5,
-        lizObj.y! - lizObj.height! * 0.5,
-        "lizard"
-      );
-    });
-
-    this.physics.add.collider(this.lizards, this.wallsLayer);
-    this.physics.add.collider(this.lizards, this.lizards);
-    this.physics.add.collider(
-      this.player,
-      this.lizards,
-      (obj1, obj2) => {
-        (obj1 as Player).getDamage(1);
-      },
-      undefined,
-      this
-    );
   }
 
   private initEnemies(): void {
@@ -171,6 +109,8 @@ export class GameScene extends Scene {
     this.physics.add.collider(
       this.player,
       this.enemies,
+
+      // @ts-ignore
       (obj1, obj2) => {
         (obj1 as Player).getDamage(1);
       },
@@ -185,6 +125,7 @@ export class GameScene extends Scene {
     this.cameras.main.setZoom(2);
   }
 
+  // @ts-ignore
   private showDebugWalls(): void {
     const debugGraphics = this.add.graphics().setAlpha(0.7);
     this.wallsLayer.renderDebug(debugGraphics, {

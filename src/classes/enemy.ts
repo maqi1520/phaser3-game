@@ -39,6 +39,17 @@ export class Enemy extends Actor {
     super(scene, x, y, texture, frame);
     this.target = target;
 
+    // ADD TO SCENE
+    //scene.add.existing(this);
+    //scene.physics.add.existing(this);
+
+    // PHYSICS MODEL
+    //this.getBody().setSize(16, 16);
+    //this.getBody().setOffset(0, 0);
+
+    // ANIMATIONS
+    this.anims.play("lizard-idle");
+
     this.attackHandler = () => {
       if (
         Math.Distance.BetweenPoints(
@@ -55,17 +66,6 @@ export class Enemy extends Actor {
       }
     };
 
-    // ADD TO SCENE
-    //scene.add.existing(this);
-    //scene.physics.add.existing(this);
-
-    // PHYSICS MODEL
-    //this.getBody().setSize(16, 16);
-    //this.getBody().setOffset(0, 0);
-
-    // ANIMATIONS
-    this.anims.play("lizard-idle");
-
     // EVENTS
     this.scene.game.events.on(EVENTS_NAME.attack, this.attackHandler, this);
     this.on("destroy", () => {
@@ -74,8 +74,6 @@ export class Enemy extends Actor {
         this.attackHandler
       );
     });
-
-    this.anims.play("lizard-idle");
 
     this.moveEvent = scene.time.addEvent({
       delay: 2000,
