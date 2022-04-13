@@ -1,4 +1,4 @@
-import { Text } from './text';
+import { Text } from "./text";
 
 export enum ScoreOperations {
   INCREASE,
@@ -10,7 +10,7 @@ export class Score extends Text {
   private scoreValue: number;
 
   constructor(scene: Phaser.Scene, x: number, y: number, initScore = 0) {
-    super(scene, x, y, `Score: ${initScore}`);
+    super(scene, x, y, `得分: ${initScore}`);
 
     scene.add.existing(this);
 
@@ -32,7 +32,7 @@ export class Score extends Text {
         break;
     }
 
-    this.setText(`Score: ${this.scoreValue}`);
+    this.setText(`得分: ${this.scoreValue}`);
   }
 
   public getValue(): number {

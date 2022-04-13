@@ -42,16 +42,15 @@ export class GameScene extends Scene {
   }
 
   private initMap(): void {
+    this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "water");
     this.map = this.make.tilemap({
       key: "dungeon",
       tileWidth: 16,
       tileHeight: 16,
     });
-
     this.tileset = this.map.addTilesetImage("Grass", "Grass");
     this.groundLayer = this.map.createLayer("Ground", this.tileset, 0, 0);
     this.wallsLayer = this.map.createLayer("Walls", this.tileset, 0, 0);
-    console.log(this.tileset);
 
     this.wallsLayer.setCollisionByProperty({ collides: true });
 

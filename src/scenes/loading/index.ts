@@ -12,7 +12,7 @@ export class LoadingScene extends Scene {
     this.load.image("king", "sprites/king.png");
     this.load.atlas(
       "a-king",
-      "spritesheets/a-king.png",
+      "spritesheets/a-king_withmask.png",
       "spritesheets/a-king_atlas.json"
     );
     this.load.atlas(
@@ -26,12 +26,21 @@ export class LoadingScene extends Scene {
       key: "Grass",
       url: "tilemaps/json/Grass.png",
     });
+    this.load.image({
+      key: "Fences",
+      url: "tilemaps/json/Fences.png",
+    });
 
     this.load.tilemapTiledJSON("dungeon", "tilemaps/json/Grass.json");
 
     // CHEST LOADING
     this.load.spritesheet("tiles_spr", "tilemaps/tiles/dungeon-16-16.png", {
       frameWidth: 16,
+      frameHeight: 16,
+    });
+
+    this.load.spritesheet("water", "spritesheets/Water.png", {
+      frameWidth: 64,
       frameHeight: 16,
     });
 
