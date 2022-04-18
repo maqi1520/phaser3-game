@@ -4,9 +4,11 @@ import { EVENTS_NAME, GameStatus } from "../../consts";
 import { Score, ScoreOperations } from "../../classes/score";
 import { Text } from "../../classes/text";
 import { gameConfig } from "../../";
+import { LEVELS } from "../../consts";
 
 export class UIScene extends Scene {
   private score!: Score;
+  private levelName!: string;
   private gameEndPhrase!: Text;
 
   private chestLootHandler: () => void;
@@ -18,8 +20,22 @@ export class UIScene extends Scene {
     this.chestLootHandler = () => {
       this.score.changeValue(ScoreOperations.INCREASE, 10);
 
-      if (this.score.getValue() === gameConfig.winScore) {
-        this.game.events.emit(EVENTS_NAME.gameEnd, "win");
+      const currentIndex = LEVELS.findIndex(
+        (item) => item.name === this.levelName
+      );
+
+      if (LEVELS[currentIndex].score === this.score.getValue()) {
+        const nextLevel = LEVELS[currentIndex + 1];
+        if (nextLevel) {
+          this.game.events.off(EVENTS_NAME.chestLoot, this.chestLootHandler);
+          this.game.events.off(EVENTS_NAME.gameEnd, this.gameEndHandler);
+          this.scene.get("game-scene").scene.restart({ name: nextLevel.name });
+          this.scene.restart({ name: nextLevel.name });
+        } else {
+          if (this.score.getValue() === gameConfig.winScore) {
+            this.game.events.emit(EVENTS_NAME.gameEnd, "win");
+          }
+        }
       }
     };
 
@@ -46,14 +62,17 @@ export class UIScene extends Scene {
       this.input.on("pointerdown", () => {
         this.game.events.off(EVENTS_NAME.chestLoot, this.chestLootHandler);
         this.game.events.off(EVENTS_NAME.gameEnd, this.gameEndHandler);
-        this.scene.get("game-scene").scene.restart();
-        this.scene.restart();
+        this.scene.get("game-scene").scene.restart({ name: "Level-1" });
+        this.scene.restart({ name: "Level-1" });
       });
     };
   }
 
-  create(): void {
+  create(props: any): void {
+    this.levelName = props.name;
     this.score = new Score(this, 20, 20, 0);
+
+    new Text(this, 20, 100, `关卡：${this.levelName}`);
 
     this.initListeners();
   }

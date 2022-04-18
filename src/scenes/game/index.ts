@@ -8,6 +8,7 @@ import { EVENTS_NAME } from "../../consts";
 
 export class GameScene extends Scene {
   private player!: Player;
+  private bg!: Phaser.GameObjects.TileSprite;
   private map!: Tilemaps.Tilemap;
   private tileset!: Tilemaps.Tileset;
   private wallsLayer!: Tilemaps.TilemapLayer;
@@ -21,10 +22,8 @@ export class GameScene extends Scene {
   }
 
   create(props: any): void {
-    console.log(props);
-
     createLizardAnims(this.anims);
-    this.initMap();
+    this.initMap(props.name);
     this.player = new Player(this, 100, 100);
 
     this.initChests();
@@ -35,13 +34,21 @@ export class GameScene extends Scene {
   }
 
   update(): void {
+    this.bg.setPosition();
     this.player.update();
   }
 
-  private initMap(): void {
-    this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, "water");
+  private initMap(name: string): void {
+    this.bg = this.add.tileSprite(
+      0,
+      0,
+      window.innerWidth,
+      window.innerHeight,
+      "water"
+    );
+
     this.map = this.make.tilemap({
-      key: "tilemapGrass",
+      key: name,
       tileWidth: 16,
       tileHeight: 16,
     });

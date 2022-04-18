@@ -31,7 +31,8 @@ export class LoadingScene extends Scene {
       url: "tilemaps/json/Fences.png",
     });
 
-    this.load.tilemapTiledJSON("tilemapGrass", "tilemaps/json/Grass.json");
+    this.load.tilemapTiledJSON("Level-1", "tilemaps/json/level-1.json");
+    this.load.tilemapTiledJSON("Level-2", "tilemaps/json/Grass.json");
 
     this.load.spritesheet("water", "spritesheets/Water.png", {
       frameWidth: 64,
@@ -46,8 +47,10 @@ export class LoadingScene extends Scene {
 
   create(): void {
     this.scene.start("game-scene", {
-      name: "level1",
+      name: "Level-1",
     });
-    this.scene.start("ui-scene");
+    this.scene.start("ui-scene", {
+      name: "Level-1",
+    });
   }
 }

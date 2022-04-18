@@ -5,6 +5,17 @@ export enum EVENTS_NAME {
   attack = "attack",
 }
 
+export const LEVELS = [
+  {
+    name: "Level-1",
+    score: 30,
+  },
+  {
+    name: "Level-2",
+    score: 100,
+  },
+];
+
 export enum GameStatus {
   WIN,
   LOSE,
